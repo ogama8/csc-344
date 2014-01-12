@@ -14,7 +14,7 @@ import progressbar
 
 REPEAT_VALS   = [2, 3, 4, 6, 8, 12, 16]
 RANDOM_CHANCE = .5
-RESET_RATE    = 2
+RESET_RATE    = 1
 
 
 if __name__ == '__main__':
