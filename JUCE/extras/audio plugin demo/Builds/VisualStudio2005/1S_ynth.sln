@@ -1,0 +1,19 @@
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual C++ Express 2005
+Project("{00CD7288-9C3A-75AD-9ECC-053D84CAF307}") = "1S_ynth", "1S_ynth.vcproj", "{64F92774-5695-B20A-C63E-7690CA0ECE34}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{64F92774-5695-B20A-C63E-7690CA0ECE34}.Debug|Win32.ActiveCfg = Debug|Win32
+		{64F92774-5695-B20A-C63E-7690CA0ECE34}.Debug|Win32.Build.0 = Debug|Win32
+		{64F92774-5695-B20A-C63E-7690CA0ECE34}.Release|Win32.ActiveCfg = Release|Win32
+		{64F92774-5695-B20A-C63E-7690CA0ECE34}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
