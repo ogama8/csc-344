@@ -178,12 +178,30 @@ void _1f_ilterAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
     int dp = delayPosition;
     
     
+    /*
+     * I think that this requires some explaination.  For some reason at about 8 tonight after struggling with complex
+     * numbers and C++ I decided to see what happens when you use a linear approximation to get from one frequency to 
+     * the next.  Uh...this kinda works.  Kinda.  What I discovered is that the further apart your frequencies are, the
+     * more likely it is that you will get resonance because the gain algorithm you gave us (I *THINK*) isn't meant to 
+     * handle this linearization of sorts.  I also had trouble getting it to work when frequencies were multiples of
+     * each other.
+     *
+     * In the end, the results were not spectacular but if you get the coefficients for say 1000Hz in there along with
+     * 400Hz there's some pretty cool resonant stuff until the plugin host smartly prevents you from blowing out your
+     * speakers.  I can see a sort of tabular method of filtering like this being useful for DSP on a microcontroller
+     * where your computational capability is limited.  Getting a filter like this working might be something I'm 
+     * interested in the last project.
+     *
+     * Eli--
+     */
+    
+    
     const double coefficients1[4] = {3.9418652031, -5.8304296418, 3.8351221403, -0.9465605711};  //400Hz
     
     const double coefficients2[4] = {3.9263413498, -5.7866072422, 3.7939131077, -0.9336541739};  //500Hz
 
     
-    double coefficientsCURRENT[4] = {(coefficients1[0]*delay + coefficients2[0]*(1-delay)),
+    double coefficientsCURRENT[4] = {(coefficients1[0]*delay + coefficients2[0]*(1-delay)),  // "Crossfade" between cutoff frequencies
                                     (coefficients1[1]*delay + coefficients2[1]*(1-delay)),
                                     (coefficients1[2]*delay + coefficients2[2]*(1-delay)),
                                     (coefficients1[3]*delay + coefficients2[3]*(1-delay))};
