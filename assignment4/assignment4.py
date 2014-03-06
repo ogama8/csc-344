@@ -15,7 +15,7 @@ from midiutil.MidiFile import MIDIFile
 TRACK = 0
 CHANNEL = 0
 VOLUME = 127
-DURATION = 1
+DURATION = 2
 MAJOR_SCALE = [0, 2, 4, 5, 7, 9, 11]
 
 CHORD_HARMONIZATION = [[1, 4],    # Chords for a note of scale degree 1
@@ -28,8 +28,10 @@ CHORD_HARMONIZATION = [[1, 4],    # Chords for a note of scale degree 1
 
 MAJOR_CHORDS = [True, False, False, True, True, False, False]
 
-
-# NEED TO ADD: NO MOTION-  V -> IV, ii -> IV, V -> ii, ii -> I
+CHORDAL_MOTION_NOS = [[5, 4],
+                      [2, 4],
+                      [5, 2],
+                      [2, 1]]
 
 
 # These are all functions used in the main of the code.  They are here because
@@ -58,14 +60,14 @@ def minor_chord(midiNoteNumber):
     """
     return [midiNoteNumber, midiNoteNumber+3, midiNoteNumber+7]
 
-def write_chord(midiFile, chordArray, currentTime, chordDuration):
+def write_chord(midiFile, chordArray, currentTime, chordDuration, chordVolume):
     """
     THIS FUNCTION MUTATES midiFile!!  It adds the cords from chordArray to the 
     sequence of notes.
     """
     for note in chordArray:
         midiFile.addNote(TRACK, CHANNEL, note, currentTime, 
-                         chordDuration, VOLUME)
+                         chordDuration, chordVolume)
 
 
 # The main code is here.
@@ -77,7 +79,7 @@ if __name__ == '__main__':
     
     # Figuring out MELODY
     scaleDegreeList = open(textFile, 'r').readlines()[0].split(' ')
-    key_full = scaleDegreeList[0]
+    key_full = scaleDegreeList[0]       # Not yet implemented
     
     scaleDegreeList.remove(key_full)
     scaleDegreeList = [int(i) for i in scaleDegreeList]
@@ -90,7 +92,17 @@ if __name__ == '__main__':
     chordRNList = [CHORD_HARMONIZATION[(deg-1)%7][random.randint(0, len(CHORD_HARMONIZATION[(deg-1)%7])-1)] 
                         for deg in scaleDegreeList]
     
-    # >>Eventually, chord progressions will be considered here<<
+    print chordRNList, "\n"
+
+    # Evaluation of proper chord progressions
+    for i in range(1, len(chordRNList)):
+        for no_no in CHORDAL_MOTION_NOS:
+            if no_no == [chordRNList[i-1], chordRNList[i]]:
+                altList = CHORD_HARMONIZATION[chordRNList[i]-1].remove(chordRNList[i])
+                if altList == None:
+                    print "The {index}th note, scale degree {deg} does not have a chord giving proper chordal structure".format(index = i+1, deg = scaleDegreeList[i])
+                else:
+                    chordRNList[i] = altList[0]    
 
     chordList = [major_chord(MAJOR_SCALE[rn-1]+48) if MAJOR_CHORDS[rn-1] 
                         else minor_chord(MAJOR_SCALE[rn-1]+48) 
@@ -115,7 +127,7 @@ if __name__ == '__main__':
 
     time = 0
     for chord in chordList:
-        write_chord(myMIDI, chord, time, DURATION)
+        write_chord(myMIDI, chord, time, DURATION, VOLUME-40)
         time += DURATION
 
     # Write it to disk.
